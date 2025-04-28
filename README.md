@@ -1,46 +1,256 @@
-# Getting Started with Create React App
+# Bacteria Growth Simulate
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An interactive bacterial growth simulation application, developed in React and TypeScript, without external libraries.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+##  Table of Contents
 
-### `npm start`
+1. [Overview](#overview-overview)
+1. [Features](#features-features)
+1. [Prerequisites](#prerequisites-prerequisites)
+1. [Installation & Run](#installation-and-run-installation--run)
+1. [Project Structure](#project-structure-project-structure)
+1. [Component Description](#component-description-components)
+1. [Data Model](#data-model-data-model)
+1. [Core Logic](#core-logic-core-logic)
+1. [User Controls](#user-controls ... Controls)](#user-controls-user-controls)
+1. [Error Handling](#error-handling-error-handling)
+1. [Performance](#performance-performance)
+1. [Assumptions](#assumptions-assumptions)
+1. [Deployment](#deployment-deployment)
+1. [Future Improvements](#future-improvements-future-improvements)
+1. [License](#license-license)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+##  1. Overview
 
-### `npm test`
+**Cell Growth Simulation** is a web-based simulator that models the growth of a bacterial colony in a grid (representing a Petri dish). Each cell can be empty or contain a bacterium that:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- divides at regular intervals,
+- undergoes a random mutation during division,
+- ages and dies after a certain lifespan.
 
-### `npm run build`
+The user can start, pause, and reset the simulation and adjust:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- the division interval,
+- the mutation probability,
+- the lifespan of the bacteria,
+- manually add/remove bacteria by clicking.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+##  2. Features
 
-### `npm run eject`
+- **Interactive grid** 50x50 (configurable)
+- **Start/Pause/Reset** the simulation
+- **Adjustable division interval** (ms)
+- **Adjustable mutation probability** (%)
+- **Adjustable life span** (ms)
+- **Manual click** to add/remove bacteria
+- **Visual mutation** (purple color)
+- **Visual aging** (light green → dark green)
+- **Smooth animation** (CSS transition)
+- **Error handling** on inputs
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+##  3. Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- **Node.js** ≥ 16
+- **npm** or **yarn**
+- Modern browser (Chrome, Firefox, Edge)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+---
 
-## Learn More
+##  4. Installation and Run (Install & Run)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+# 1. Clone the repository
+git clone https://github.com/jaulin10/bact-growth-simulation.git
+cd cell-growth-simulation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# 2. Install dependencies
+npm install
+# or
+yarn install
+
+# 3. Run in development mode
+npm start
+# or
+yarn start
+
+# 4. Open http://localhost:3000
+
+#5>>>>>>>>>>>>> # Project Structure <<<<<<<<<<<<
+
+Bact-growth-simulation/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   ├── Grid.tsx
+│   │   └── Controls.tsx
+│   ├── types/
+│   │   └── Types.ts
+│   ├── App.tsx
+│   ├── index.tsx
+│   └── index.css
+├── .gitignore
+├── package.json
+└── README.md
+
+
+>>>>>>>>>>>>> Components Description <<<<<<<<<<<<<
+
+App.tsx
+Overall status :
+grid, tick, isRunning, intervalTime,
+mutationProb, lifespan, isIntervalValid
+
+Hooks :
+
+useEffect to manage the tick interval
+
+Rendering :
+
+<Controls />
+
+<Grid />
+
+Controls.tsx
+Props :
+isRunning, onStartPause, onReset,
+interval, onIntervalChange, isIntervalValid,
+mutationProb, setMutationProb, lifespan, setLifespan
+
+Display :
+
+Buttons Start/Break, Reset
+
+Inputs for interval, mutationProb, lifespan
+
+Live interval validation
+
+Grid.tsx
+Props :
+grid, setGrid, tick, mutationProb, lifespan
+
+Hook useEffect :
+
+Aging (cell.age += TICK_INTERVAL)
+
+Mort si age ≥ lifespan
+
+Division into an empty neighbor (mutationProb)
+
+getBacteriaColor :
+
+null → blanc
+
+mutated → violet
+
+ageRatio → nuance de vert
+
+toggleCell :
+
+Clic to add/remove a bacteria
+
+Types.ts
+export type EmptyCell = null;
+
+export type BacteriaCell = {
+  type: "bacteria";
+  age: number;
+  lifespan: number;
+  mutated: boolean;
+};
+
+export type CellState = EmptyCell | BacteriaCell;
+
+
+#7. >>>>>>>>>>>>> Data Model <<<<<<<<<<<<<
+Grid: CellState[][]
+
+CellState:
+
+null (empty)
+
+{ type: "bacteria"; age: number; lifespan: number; mutated: boolean }
+
+#8  >>>>>>>>>>>>> Core Logic <<<<<<<<<<<<<
+Tick incremented every intervalTime ms →
+
+Aging: cell.age += TICK_INTERVAL
+
+Death: if age ≥ lifespan → cell is null
+
+Division: new bacteria in an empty neighbor
+
+Mutation: Math.random() < mutationProb
+
+#9.  >>>>>>>>>>>>> User Controls <<<<<<<<<<<<<
+Start/Pause: starts/stops the simulation
+
+Reset: empty grid + tick = 0
+
+Interval: ms between divisions (min 1)
+
+Mutation (%): 0–100% → probability 0–1
+
+Lifespan: lifespan in ms (min 1000)
+
+#10 >>>>>>>>>>>>> Error Handling <<<<<<<<<<<<< 
+Interval: validated > 0 → Start button disabled + red message
+
+Mutation / Lifespan:
+
+Constrained mutation 0–100%
+
+Constrained lifespan ≥ 1000 ms
+
+Clicking outside the grid is not possible
+
+#11 >>>>>>>>>>>>>  Performance <<<<<<<<<<<<< 
+50x50 grid in dev, can be scaled up to 200x200 in production
+
+O(n²) complexity per tick
+
+Optimizations: Web Workers, Canvas, grid partitioning
+
+#12 >>>>>>>>>>>>>  Assumptions <<<<<<<<<<<<< 
+Square grid, fixed size
+
+Synchronous division + aging
+
+Simple Boolean mutation
+
+Maximum one division per tick
+
+#13 >>>>>>>>>>>>>   Deployment <<<<<<<<<<<<<
+Netlify / Vercel / GitHub Pages:
+
+npm run build
+
+Deploy build/
+
+Public URL via HTTPS
+
+#14  >>>>>>>>>>>>>   Future Improvements <<<<<<<<<<<<<
+Real-time graphics
+
+Canvas/WebGL for large grids
+
+Web Workers for asynchronous computation
+
+State saving/loading
+
+Additional sound effects/animations
+
+#15.>>>>>>>>>>>>>   License <<<<<<<<<<<<<
+This project is licensed under the MIT License.
+See LICENSE for details.
+
+Author: Jaulin Nanfack
+Date: 2025-04-27
