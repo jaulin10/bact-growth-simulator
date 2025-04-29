@@ -229,13 +229,13 @@ Simple Boolean mutation
 Maximum one division per tick
 
 #13 >>>>>>>>>>>>>   Deployment <<<<<<<<<<<<<
-Netlify / Vercel / GitHub Pages:
+ Vercel / GitHub Pages: https://bact-growth-simulator.vercel.app/
 
 npm run build
 
 Deploy build/
 
-Public URL via HTTPS
+Public URL via HTTPS : 
 
 #14  >>>>>>>>>>>>>   Future Improvements <<<<<<<<<<<<<
 Real-time graphics

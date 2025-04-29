@@ -21,7 +21,7 @@ const Grid: React.FC<GridProps> = ({
   const TICK_INTERVAL = 1000;
 
   const getBacteriaColor = (cell: CellState | null) => {
-    if (!cell) return "white"; // Si jamais cell est null, retourne blanc
+    if (!cell) return "white"; // If ever cell is null, returns white
     if (cell.mutated) return "purple";
 
     const ageRatio = Math.min(cell.age / cell.lifespan, 1);
