@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { CellState } from "./Types";
+import { CellState } from "../types/Types";
 
 interface GridProps {
   grid: CellState[][];

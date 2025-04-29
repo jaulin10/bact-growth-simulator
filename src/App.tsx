@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Grid from "./Grid";
-import Controls from "./Controls";
-import { CellState } from "./Types";
-import Chart from "./Chart";
+import Grid from "./components/Grid";
+import Controls from "./components/Controls";
+import { CellState } from "./types/Types";
+import Chart from "./components/Chart";
 
 const App: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
